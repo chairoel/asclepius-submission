@@ -1,20 +1,49 @@
 package com.dicoding.asclepius.view
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.yalantis.ucrop.UCrop
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
 
     private var currentImageUri: Uri? = null
+
+    private val uCropLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val resultUri = UCrop.getOutput(result.data!!)
+                if (resultUri != null) {
+                    currentImageUri = resultUri
+                    showImage()
+                }
+            } else if (result.resultCode == UCrop.RESULT_ERROR) {
+                val error = UCrop.getError(result.data!!)
+                error?.printStackTrace()
+                showToast("Gagal crop gambar")
+            }
+        }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            startCrop(uri)
+        } else {
+            showToast("No media selected")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = getText(R.string.app_name)
 
         binding.galleryButton.setOnClickListener { startGallery() }
+
         binding.analyzeButton.setOnClickListener {
             if (currentImageUri != null) {
                 analyzeImage()
@@ -35,20 +65,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val launcherGallery = registerForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            currentImageUri = uri
-            showImage()
-        } else {
-            showToast("No media selected")
-        }
-    }
 
     private fun startGallery() {
         // TODO: Mendapatkan gambar dari Gallery.
-        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        launcherGallery.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+    }
+
+    private fun startCrop(sourceUri: Uri) {
+        val destinationUri =
+            Uri.fromFile(File(cacheDir, "cropped_${System.currentTimeMillis()}.jpg"))
+
+        val intent = UCrop.of(sourceUri, destinationUri)
+            .withAspectRatio(1f, 1f)
+            .withMaxResultSize(1000, 1000)
+            .getIntent(this)
+
+        uCropLauncher.launch(intent)
     }
 
     private fun showImage() {
