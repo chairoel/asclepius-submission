@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             currentImageUri = uri
             showImage()
         } else {
-            Log.d("Photo Picker", "No media selected")
+            showToast("No media selected")
         }
     }
 
@@ -51,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     private fun showImage() {
         // TODO: Menampilkan gambar sesuai Gallery yang dipilih.
         currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
         }
     }
@@ -59,12 +57,12 @@ class MainActivity : AppCompatActivity() {
     private fun analyzeImage() {
         // TODO: Menganalisa gambar yang berhasil ditampilkan.
         currentImageUri?.let {
-            ImageClassifierHelper(this).classifyStaticImage(it)
+            ImageClassifierHelper(context = this@MainActivity).classifyStaticImage(it)
         }
     }
 
     private fun moveToResult() {
-        val intent = Intent(this, ResultActivity::class.java)
+        val intent = Intent(this@MainActivity, ResultActivity::class.java)
         intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
         startActivity(intent)
     }

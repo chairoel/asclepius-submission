@@ -3,7 +3,6 @@ package com.dicoding.asclepius.helper
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.media.Image
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -19,7 +18,9 @@ import java.util.Locale
 
 class ImageClassifierHelper(
     private val context: Context,
-    private val modelName: String = "cancer_classification.tflite"
+    private val modelName: String = "cancer_classification.tflite",
+    private val threshold: Float = 0.1f,
+    private val maxResults: Int = 3
 ) {
 
     private var imageClassifier: ImageClassifier? = null
@@ -27,21 +28,20 @@ class ImageClassifierHelper(
 
     private fun setupImageClassifier() {
         // TODO: Menyiapkan Image Classifier untuk memproses gambar.
-        val options = ImageClassifierOptions.builder()
-            .setScoreThreshold(0.1f)
-            .setMaxResults(3)
-            .setBaseOptions(
-                BaseOptions.builder()
-                    .setNumThreads(4)
-                    .build()
-            )
-            .build()
+        val optionsBuilder = ImageClassifierOptions.builder()
+            .setScoreThreshold(threshold)
+            .setMaxResults(maxResults)
+
+        val baseOptionsBuilder = BaseOptions.builder()
+            .setNumThreads(4)
+
+        optionsBuilder.setBaseOptions(baseOptionsBuilder.build())
 
         try {
             imageClassifier = ImageClassifier.createFromFileAndOptions(
                 context,
                 modelName,
-                options
+                optionsBuilder.build()
             )
         } catch (e: Exception) {
             Log.e(TAG, "Setup gagal: ${e.message}")
@@ -81,9 +81,7 @@ class ImageClassifierHelper(
             ?.let { category ->
                 "${category.label} (${
                     String.format(
-                        Locale.getDefault(),
-                        "%.1f%%",
-                        category.score * 100
+                        Locale.getDefault(), "%.1f%%", category.score * 100
                     )
                 })"
             }
