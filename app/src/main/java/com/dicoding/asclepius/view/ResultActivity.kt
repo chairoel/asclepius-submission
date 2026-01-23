@@ -3,6 +3,7 @@ package com.dicoding.asclepius.view
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 
@@ -14,6 +15,10 @@ class ResultActivity : AppCompatActivity() {
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.appBar.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Hasil Analisa"
+
         // TODO: Menampilkan hasil gambar, prediksi, dan confidence score.
         val imageUriString = intent.getStringExtra(EXTRA_IMAGE_URI)
         imageUriString?.let { uriStr ->
@@ -24,6 +29,13 @@ class ResultActivity : AppCompatActivity() {
             helper.classifyStaticImage(imageUri)
             binding.resultText.text = helper.predictionResult ?: "Analisis gagal"
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
