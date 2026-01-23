@@ -3,8 +3,8 @@ package com.dicoding.asclepius.view
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.dicoding.asclepius.databinding.ActivityResultBinding
+import com.dicoding.asclepius.helper.ImageClassifierHelper
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
@@ -15,10 +15,14 @@ class ResultActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // TODO: Menampilkan hasil gambar, prediksi, dan confidence score.
-        val imageUri = Uri.parse(intent.getStringExtra(EXTRA_IMAGE_URI))
-        imageUri?.let {
-            Log.d("Image URI", "showImage: $it")
-            binding.resultImage.setImageURI(it)
+        val imageUriString = intent.getStringExtra(EXTRA_IMAGE_URI)
+        imageUriString?.let { uriStr ->
+            val imageUri = Uri.parse(uriStr)
+            binding.resultImage.setImageURI(imageUri)
+
+            val helper = ImageClassifierHelper(this)
+            helper.classifyStaticImage(imageUri)
+            binding.resultText.text = helper.predictionResult ?: "Analisis gagal"
         }
     }
 

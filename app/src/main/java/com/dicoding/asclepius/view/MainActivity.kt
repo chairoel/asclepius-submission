@@ -1,6 +1,5 @@
 package com.dicoding.asclepius.view
 
-import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,8 +8,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
+import com.dicoding.asclepius.helper.ImageClassifierHelper
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -23,7 +22,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.galleryButton.setOnClickListener { startGallery() }
-        binding.analyzeButton.setOnClickListener { moveToResult() }
+        binding.analyzeButton.setOnClickListener {
+            if (currentImageUri != null) {
+                analyzeImage()
+                moveToResult()
+            } else {
+                showToast("Pilih gambar dulu!")
+            }
+        }
     }
 
     private val launcherGallery = registerForActivityResult(
@@ -52,6 +58,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun analyzeImage() {
         // TODO: Menganalisa gambar yang berhasil ditampilkan.
+        currentImageUri?.let {
+            ImageClassifierHelper(this).classifyStaticImage(it)
+        }
     }
 
     private fun moveToResult() {
