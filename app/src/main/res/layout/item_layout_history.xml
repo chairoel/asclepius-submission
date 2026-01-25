@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    tools:context=".ui.adapter.HistoryAdapter">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ci_analyze_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/analyze"
+        android:src="?attr/colorSurfaceVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_analyze_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_analyze_score"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ci_analyze_image"
+        app:layout_constraintTop_toTopOf="@id/ci_analyze_image"
+        tools:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/tv_analyze_score"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:maxLines="2"
+        android:textColor="?attr/colorTertiary"
+        app:layout_constraintBottom_toBottomOf="@id/ci_analyze_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ci_analyze_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_analyze_label"
+        tools:text="@tools:sample/lorem" />
+</androidx.constraintlayout.widget.ConstraintLayout>

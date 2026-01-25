@@ -6,6 +6,10 @@
     <string name="analyze">Analyze</string>
     <string name="result">Hasil Analisis</string>
     <string name="save">Simpan</string>
+    <string name="delete">Hapus</string>
 
-    <string name="history">History</string>
+    <string name="history">Data Riwayat</string>
+    <string name="data_is_empty">Data Riwayat Kosong</string>
+    <string name="history_image">History image</string>
+    <string name="accuracy_score">Akurasi: %s</string>
 </resources>

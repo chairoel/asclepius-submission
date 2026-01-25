@@ -1,16 +1,18 @@
 package com.dicoding.asclepius.ui.view
 
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.ViewModelFactory
 import com.dicoding.asclepius.data.local.entity.HistoryEntity
-import com.dicoding.asclepius.data.model.Prediction
 import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.dicoding.asclepius.ui.model.Prediction
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
 
 class ResultActivity : AppCompatActivity() {
@@ -43,6 +45,32 @@ class ResultActivity : AppCompatActivity() {
             binding.resultText.text = predictionResult?.toString() ?: "Analisis gagal"
         }
 
+        val source = intent.getStringExtra(EXTRA_SOURCE)
+
+        binding.btnSave.apply {
+            if (source == MainActivity::class.java.simpleName) {
+                setIconResource(R.drawable.ic_save_24)
+                text = getString(R.string.save)
+            } else {
+                setIconResource(R.drawable.ic_delete_24)
+                text = getString(R.string.delete)
+
+                val typedValue =
+                    context.obtainStyledAttributes(intArrayOf(com.google.android.material.R.attr.colorError))
+                val errorColor = typedValue.getColor(0, 0)
+                typedValue.recycle()
+
+                val typedValue2 =
+                    context.obtainStyledAttributes(intArrayOf(com.google.android.material.R.attr.colorOnError))
+                val onErrorColor = typedValue2.getColor(0, 0)
+                typedValue2.recycle()
+
+                backgroundTintList = ColorStateList.valueOf(errorColor)
+                setTextColor(onErrorColor)
+                iconTint = ColorStateList.valueOf(onErrorColor)
+            }
+        }
+
         binding.btnSave.setOnClickListener {
             predictionResult?.let { result ->
                 val history = HistoryEntity(
@@ -68,5 +96,6 @@ class ResultActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_IMAGE_URI = "extra_image_uri"
+        const val EXTRA_SOURCE = "extra_source_intent"
     }
 }

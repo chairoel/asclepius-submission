@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.data.model
+package com.dicoding.asclepius.ui.model
 
 import java.util.Locale
 
