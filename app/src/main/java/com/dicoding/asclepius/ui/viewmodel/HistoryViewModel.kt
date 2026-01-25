@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.viewmodel
+package com.dicoding.asclepius.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

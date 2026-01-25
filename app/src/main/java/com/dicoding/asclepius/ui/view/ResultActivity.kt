@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.view
+package com.dicoding.asclepius.ui.view
 
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.dicoding.asclepius.data.local.entity.HistoryEntity
 import com.dicoding.asclepius.data.model.Prediction
 import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
-import com.dicoding.asclepius.viewmodel.HistoryViewModel
+import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
