@@ -6,6 +6,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import com.dicoding.asclepius.data.model.Prediction
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.common.ops.CastOp
 import org.tensorflow.lite.support.image.ImageProcessor
@@ -24,7 +25,7 @@ class ImageClassifierHelper(
 ) {
 
     private var imageClassifier: ImageClassifier? = null
-    var predictionResult: String? = null
+    var predictionResult: Prediction? = null
 
     private fun setupImageClassifier() {
         // TODO: Menyiapkan Image Classifier untuk memproses gambar.
@@ -79,11 +80,11 @@ class ImageClassifierHelper(
         predictionResult = results?.firstOrNull()?.categories
             ?.maxByOrNull { it.score }
             ?.let { category ->
-                "${category.label} (${
-                    String.format(
-                        Locale.getDefault(), "%.1f%%", category.score * 100
-                    )
-                })"
+                Prediction(
+                    label = category.label,
+                    score = category.score,
+                    source = imageUri.toString()
+                )
             }
 
         Log.d(TAG, "Prediksi: $predictionResult")
