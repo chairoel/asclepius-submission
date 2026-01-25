@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -57,4 +58,15 @@ dependencies {
 
     implementation("com.github.yalantis:ucrop:2.2.11")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
+
+    // room
+    implementation("androidx.room:room-runtime:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
+
+    //coroutine support
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1") //viewModelScope
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1") //liveData
+
+    implementation("androidx.activity:activity-ktx:1.8.2")
 }
