@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/app_bar"
         app:srcCompat="@drawable/ic_place_holder" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/galleryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -47,11 +47,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/gallery"
+        app:icon="@drawable/ic_add_photo_24"
+        app:iconGravity="textStart"
         app:layout_constraintBottom_toTopOf="@+id/analyzeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/analyzeButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,6 +61,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/analyze"
+        app:icon="@drawable/ic_frame_inspect_24"
+        app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
