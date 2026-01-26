@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.ViewModelFactory
 import com.dicoding.asclepius.data.local.entity.HistoryEntity
@@ -14,6 +15,7 @@ import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 import com.dicoding.asclepius.ui.model.Prediction
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
+import kotlinx.coroutines.launch
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
@@ -35,17 +37,40 @@ class ResultActivity : AppCompatActivity() {
 
         // TODO: Menampilkan hasil gambar, prediksi, dan confidence score.
         val imageUriString = intent.getStringExtra(EXTRA_IMAGE_URI)
+        val historyId = intent.getStringExtra(EXTRA_ID)
+        val source = intent.getStringExtra(EXTRA_SOURCE)
+
         imageUriString?.let { uriStr ->
             val imageUri = Uri.parse(uriStr)
             binding.resultImage.setImageURI(imageUri)
 
-            val helper = ImageClassifierHelper(this)
-            helper.classifyStaticImage(imageUri)
-            predictionResult = helper.predictionResult
-            binding.resultText.text = predictionResult?.toString() ?: "Analisis gagal"
-        }
+            when {
+                source == MainActivity::class.java.simpleName -> {
+                    val helper = ImageClassifierHelper(this)
+                    helper.classifyStaticImage(imageUri)
+                    predictionResult = helper.predictionResult
+                    binding.resultText.text = predictionResult?.toString() ?: "Analisis gagal"
+                }
 
-        val source = intent.getStringExtra(EXTRA_SOURCE)
+                historyId != null -> {
+                    lifecycleScope.launch {
+                        predictionResult = viewModel.getHistoryForResult(historyId)
+                        predictionResult?.let {
+                            binding.resultText.text = predictionResult?.toString()
+                        } ?: run {
+                            Toast.makeText(
+                                this@ResultActivity,
+                                "Riwayat tidak ditemukan",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
+                        }
+                    }
+                }
+
+                else -> {}
+            }
+        }
 
         binding.btnSave.apply {
             if (source == MainActivity::class.java.simpleName) {
@@ -74,28 +99,39 @@ class ResultActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener {
             predictionResult?.let { result ->
                 val history = HistoryEntity(
+                    id = result.id,
                     imageUri = result.source,
                     predictionResult = result.label,
                     confidenceScore = result.score,
                     createdAt = System.currentTimeMillis()
                 )
 
-                viewModel.saveHistory(history)
-                Toast.makeText(this, "Riwayat disimpan!", Toast.LENGTH_SHORT).show()
+                if (source == MainActivity::class.java.simpleName) {
+                    viewModel.saveHistory(history)
+                    Toast.makeText(this, "Riwayat disimpan!", Toast.LENGTH_SHORT).show()
+                } else {
+                    viewModel.deleteHistory(result.id)
+                    Toast.makeText(this, "Riwayat dihapus!", Toast.LENGTH_SHORT).show()
+                }
                 finish()
-            }
+            } ?: Toast.makeText(this, "Data tidak tersedia", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
         const val EXTRA_IMAGE_URI = "extra_image_uri"
+        const val EXTRA_ID = "extra_id"
         const val EXTRA_SOURCE = "extra_source_intent"
     }
 }

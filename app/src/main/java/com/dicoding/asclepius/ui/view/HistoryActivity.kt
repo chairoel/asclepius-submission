@@ -11,11 +11,10 @@ import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.ViewModelFactory
 import com.dicoding.asclepius.databinding.ActivityHistoryBinding
 import com.dicoding.asclepius.ui.adapter.HistoryAdapter
-import com.dicoding.asclepius.ui.adapter.HistoryClickListener
 import com.dicoding.asclepius.ui.model.Prediction
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
 
-class HistoryActivity : AppCompatActivity(), HistoryClickListener {
+class HistoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHistoryBinding
 
@@ -34,7 +33,15 @@ class HistoryActivity : AppCompatActivity(), HistoryClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.history)
 
-        historyAdapter = HistoryAdapter(this@HistoryActivity)
+        historyAdapter = HistoryAdapter { predictionId, imageUri ->
+            val intent = Intent(this, ResultActivity::class.java).apply {
+                putExtra(ResultActivity.EXTRA_IMAGE_URI, imageUri)
+                putExtra(ResultActivity.EXTRA_ID, predictionId)
+                putExtra(ResultActivity.EXTRA_SOURCE, HistoryActivity::class.java.simpleName)
+            }
+            startActivity(intent)
+        }
+
         binding.rvHistory.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@HistoryActivity)
@@ -42,17 +49,16 @@ class HistoryActivity : AppCompatActivity(), HistoryClickListener {
         }
 
         viewModel.getHistories().observe(this) { histories ->
-            val data: ArrayList<Prediction> = ArrayList()
-            histories.map { history ->
-                val prediction = Prediction(
+            val predictions = histories.map { history ->
+                Prediction(
+                    id = history.id,
                     source = history.imageUri,
                     label = history.predictionResult,
                     score = history.confidenceScore
                 )
-                data.add(prediction)
             }
-            historyAdapter.setItems(data)
-            binding.tvEmptyData.visibility = if (data.isEmpty()) View.VISIBLE else View.GONE
+            historyAdapter.submitList(predictions)
+            binding.tvEmptyData.visibility = if (predictions.isEmpty()) View.VISIBLE else View.GONE
         }
 
     }
@@ -62,14 +68,5 @@ class HistoryActivity : AppCompatActivity(), HistoryClickListener {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-
-    override fun onItemClicked(position: Int) {
-        val item = historyAdapter.getItem(position)
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, item.source)
-        intent.putExtra(ResultActivity.EXTRA_SOURCE, HistoryActivity::class.java.simpleName)
-        startActivity(intent)
     }
 }

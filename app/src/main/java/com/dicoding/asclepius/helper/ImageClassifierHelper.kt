@@ -15,7 +15,7 @@ import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier.ImageClassifierOptions
-import java.util.Locale
+import java.util.UUID
 
 class ImageClassifierHelper(
     private val context: Context,
@@ -81,6 +81,7 @@ class ImageClassifierHelper(
             ?.maxByOrNull { it.score }
             ?.let { category ->
                 Prediction(
+                    id = UUID.randomUUID().toString(),
                     label = category.label,
                     score = category.score,
                     source = imageUri.toString()

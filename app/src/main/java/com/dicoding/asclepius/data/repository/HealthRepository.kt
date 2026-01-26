@@ -12,15 +12,14 @@ class HealthRepository private constructor(
         return historyDao.getHistory()
     }
 
-    fun getHistoryById(id: Long): LiveData<HistoryEntity> {
-        return historyDao.getHistoryById(id)
-    }
+    suspend fun getHistoryById(id: String): HistoryEntity? =
+        historyDao.getHistoryById(id)
 
     suspend fun insertHistory(user: HistoryEntity) {
         historyDao.insertHistory(user)
     }
 
-    suspend fun deleteFHistoryById(id: Long) {
+    suspend fun deleteHistoryById(id: String) {
         historyDao.deleteById(id)
     }
 

@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "history")
 class HistoryEntity(
-    @field:PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    @field:PrimaryKey(autoGenerate = false)
+    val id: String,
 
     @field:ColumnInfo(name = "image_uri")
     val imageUri: String,

@@ -13,12 +13,12 @@ interface HistoryDao {
     fun getHistory(): LiveData<List<HistoryEntity>>
 
     @Query("SELECT * FROM history WHERE id = :id")
-    fun getHistoryById(id: Long): LiveData<HistoryEntity>
+    suspend fun getHistoryById(id: String): HistoryEntity?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertHistory(user: HistoryEntity)
 
     @Query("DELETE FROM history WHERE id = :id")
-    suspend fun deleteById(id: Long)
+    suspend fun deleteById(id: String)
 
 }

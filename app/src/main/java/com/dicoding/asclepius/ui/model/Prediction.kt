@@ -3,6 +3,7 @@ package com.dicoding.asclepius.ui.model
 import java.util.Locale
 
 data class Prediction(
+    val id: String,
     val source: String,
     val label: String,
     val score: Float,
