@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.ui.adapter
+package com.dicoding.asclepius.ui.adapter.history
 
 import androidx.recyclerview.widget.DiffUtil
 import com.dicoding.asclepius.ui.model.Prediction

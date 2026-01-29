@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp"
-    tools:context=".ui.adapter.HistoryAdapter">
+    tools:context=".ui.adapter.news.NewsAdapter">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_image"

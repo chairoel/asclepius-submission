@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.ViewModelFactory
 import com.dicoding.asclepius.databinding.ActivityHistoryBinding
-import com.dicoding.asclepius.ui.adapter.HistoryAdapter
+import com.dicoding.asclepius.ui.adapter.history.HistoryAdapter
 import com.dicoding.asclepius.ui.model.Prediction
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
 

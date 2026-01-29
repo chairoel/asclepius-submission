@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.ui.adapter
+package com.dicoding.asclepius.ui.adapter.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
