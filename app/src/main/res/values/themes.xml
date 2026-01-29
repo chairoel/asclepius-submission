@@ -51,4 +51,9 @@
         <item name="android:textColorSecondary">?attr/colorOnPrimaryContainer</item>
         <item name="android:fontFamily">@font/montserrat_semibold</item>
     </style>
+
+    <style name="RoundedImage12dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
 </resources>

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.asclepius.di.Injection
 import com.dicoding.asclepius.data.repository.HealthRepository
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
+import com.dicoding.asclepius.ui.viewmodel.ResultViewModel
 
 class ViewModelFactory private constructor(private val healthRepository: HealthRepository) :
     ViewModelProvider.NewInstanceFactory() {
@@ -14,6 +15,10 @@ class ViewModelFactory private constructor(private val healthRepository: HealthR
 
         if (modelClass.isAssignableFrom(HistoryViewModel::class.java)) {
             return HistoryViewModel(healthRepository) as T
+        }
+
+        if (modelClass.isAssignableFrom(ResultViewModel::class.java)) {
+            return ResultViewModel(healthRepository) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

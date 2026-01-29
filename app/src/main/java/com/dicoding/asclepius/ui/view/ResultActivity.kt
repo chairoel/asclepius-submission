@@ -4,23 +4,32 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.ViewModelFactory
 import com.dicoding.asclepius.data.local.entity.HistoryEntity
 import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.dicoding.asclepius.ui.adapter.news.NewsAdapter
 import com.dicoding.asclepius.ui.model.Prediction
 import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
+import com.dicoding.asclepius.ui.viewmodel.ResultViewModel
 import kotlinx.coroutines.launch
+import com.dicoding.asclepius.data.Result
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
 
-    private val viewModel: HistoryViewModel by viewModels {
+    private val historyViewModel: HistoryViewModel by viewModels {
+        ViewModelFactory.getInstance(this)
+    }
+
+    private val viewModel: ResultViewModel by viewModels {
         ViewModelFactory.getInstance(this)
     }
 
@@ -54,7 +63,7 @@ class ResultActivity : AppCompatActivity() {
 
                 historyId != null -> {
                     lifecycleScope.launch {
-                        predictionResult = viewModel.getHistoryForResult(historyId)
+                        predictionResult = historyViewModel.getHistoryForResult(historyId)
                         predictionResult?.let {
                             binding.resultText.text = predictionResult?.toString()
                         } ?: run {
@@ -69,6 +78,32 @@ class ResultActivity : AppCompatActivity() {
                 }
 
                 else -> {}
+            }
+        }
+
+        val newsAdapter = NewsAdapter()
+        binding.rvArticle.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(this@ResultActivity)
+            adapter = newsAdapter
+        }
+
+        viewModel.listArticle.observe(this) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.loading.visibility = View.VISIBLE
+                    binding.rvArticle.visibility = View.GONE
+                }
+                is Result.Success -> {
+                    binding.loading.visibility = View.GONE
+                    binding.rvArticle.visibility = View.VISIBLE
+                    newsAdapter.submitList(result.data)
+                }
+                is Result.Error -> {
+                    binding.loading.visibility = View.GONE
+                    binding.rvArticle.visibility = View.GONE
+                    Toast.makeText(this@ResultActivity, result.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -107,10 +142,10 @@ class ResultActivity : AppCompatActivity() {
                 )
 
                 if (source == MainActivity::class.java.simpleName) {
-                    viewModel.saveHistory(history)
+                    historyViewModel.saveHistory(history)
                     Toast.makeText(this, "Riwayat disimpan!", Toast.LENGTH_SHORT).show()
                 } else {
-                    viewModel.deleteHistory(result.id)
+                    historyViewModel.deleteHistory(result.id)
                     Toast.makeText(this, "Riwayat dihapus!", Toast.LENGTH_SHORT).show()
                 }
                 finish()

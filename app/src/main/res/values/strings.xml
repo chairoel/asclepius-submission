@@ -12,4 +12,5 @@
     <string name="data_is_empty">Data Riwayat Kosong</string>
     <string name="history_image">History image</string>
     <string name="accuracy_score">Akurasi: %s</string>
+    <string name="view_more">View More</string>
 </resources>
