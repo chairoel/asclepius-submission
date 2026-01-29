@@ -16,6 +16,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"06e84364a27b417ca1832e488542208a\"")
+        buildConfigField("String", "BASE_URL", "\"https://newsapi.org/\"")
     }
 
     buildTypes {
@@ -37,6 +40,7 @@ android {
     buildFeatures {
         viewBinding = true
         mlModelBinding = true
+        buildConfig = true
     }
 }
 
@@ -63,6 +67,11 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     //coroutine support
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1") //viewModelScope
