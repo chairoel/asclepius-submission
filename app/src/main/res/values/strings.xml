@@ -13,4 +13,7 @@
     <string name="history_image">History image</string>
     <string name="accuracy_score">Akurasi: %s</string>
     <string name="view_more">View More</string>
+    <string name="news_label">Tahukah Anda?</string>
+    <string name="news_label_desc">Artikel berikut dipilih untuk membantu memahami topik kesehatan yang berkaitan dengan hasil analisa.
+Bukan pengganti diagnosis medis.</string>
 </resources>

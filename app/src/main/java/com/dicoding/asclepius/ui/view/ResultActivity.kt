@@ -21,6 +21,7 @@ import com.dicoding.asclepius.ui.viewmodel.HistoryViewModel
 import com.dicoding.asclepius.ui.viewmodel.ResultViewModel
 import kotlinx.coroutines.launch
 import com.dicoding.asclepius.data.Result
+import com.google.android.material.R as MR
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
@@ -59,6 +60,7 @@ class ResultActivity : AppCompatActivity() {
                     helper.classifyStaticImage(imageUri)
                     predictionResult = helper.predictionResult
                     binding.resultText.text = predictionResult?.toString() ?: "Analisis gagal"
+                    setPredictionTextColor(predictionResult?.label)
                 }
 
                 historyId != null -> {
@@ -66,6 +68,7 @@ class ResultActivity : AppCompatActivity() {
                         predictionResult = historyViewModel.getHistoryForResult(historyId)
                         predictionResult?.let {
                             binding.resultText.text = predictionResult?.toString()
+                            setPredictionTextColor(predictionResult?.label)
                         } ?: run {
                             Toast.makeText(
                                 this@ResultActivity,
@@ -93,15 +96,21 @@ class ResultActivity : AppCompatActivity() {
                 is Result.Loading -> {
                     binding.loading.visibility = View.VISIBLE
                     binding.rvArticle.visibility = View.GONE
+                    binding.tvArticleLabel.visibility = View.GONE
+                    binding.tvArticleLabelDesc.visibility = View.GONE
                 }
                 is Result.Success -> {
                     binding.loading.visibility = View.GONE
                     binding.rvArticle.visibility = View.VISIBLE
+                    binding.tvArticleLabel.visibility = View.VISIBLE
+                    binding.tvArticleLabelDesc.visibility = View.VISIBLE
                     newsAdapter.submitList(result.data)
                 }
                 is Result.Error -> {
                     binding.loading.visibility = View.GONE
                     binding.rvArticle.visibility = View.GONE
+                    binding.tvArticleLabel.visibility = View.GONE
+                    binding.tvArticleLabelDesc.visibility = View.GONE
                     Toast.makeText(this@ResultActivity, result.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -152,6 +161,23 @@ class ResultActivity : AppCompatActivity() {
             } ?: Toast.makeText(this, "Data tidak tersedia", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun setPredictionTextColor(label: String?) {
+        val isNonCancer = label?.contains("Non", ignoreCase = true) == true
+
+        val attr = if (isNonCancer) {
+            MR.attr.colorPrimary
+        } else {
+            MR.attr.colorError
+        }
+
+        val typedArray = theme.obtainStyledAttributes(intArrayOf(attr))
+        val color = typedArray.getColor(0, 0)
+        typedArray.recycle()
+
+        binding.resultText.setTextColor(color)
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
